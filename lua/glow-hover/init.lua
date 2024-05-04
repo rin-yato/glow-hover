@@ -196,16 +196,9 @@ function M.hovehandler(markdown_lines, opts)
   tf:flush()
   local cmd = string.format("%s -w %d -s %s %s", opts.glow_path, opts.width,
     colorscheme, tfn)
-  local handle = io.popen(cmd)
-  local rendered = handle:read("*a")
-  handle:close()
+  local renderedLines = vim.split(vim.fn.system(cmd), "\n", { plain = true })
   tf:close()
   os.remove(tfn)
-
-  local renderedLines = {}
-  for line in rendered:gmatch("([^\n]*)\n?") do
-    renderedLines[#renderedLines + 1] = line:gsub('%s+$', '')
-  end
 
   renderedLines = lsputil._trim(renderedLines)
   opts = M.close_previous_previews(opts)
